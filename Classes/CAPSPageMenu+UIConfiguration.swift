@@ -130,13 +130,6 @@ extension CAPSPageMenu {
     }
     
     func configureUserInterface() {
-        // Add tap gesture recognizer to controller scroll view to recognize menu item selection
-        let menuItemTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(CAPSPageMenu.handleMenuItemTap(_:)))
-        menuItemTapGestureRecognizer.numberOfTapsRequired = 1
-        menuItemTapGestureRecognizer.numberOfTouchesRequired = 1
-        menuItemTapGestureRecognizer.delegate = self
-        menuScrollView.addGestureRecognizer(menuItemTapGestureRecognizer)
-        
         // Set delegate for controller scroll view
         controllerScrollView.delegate = self
         
@@ -213,6 +206,11 @@ extension CAPSPageMenu {
             // Add menu item view to menu scroll view
             menuScrollView.addSubview(menuItemView)
             menuItems.append(menuItemView)
+            // Add tap gesture recognizer to each menu item to recognize menu item selection
+            let menuItemTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(CAPSPageMenu.handleMenuItemTap(_:)))
+            menuItemTapGestureRecognizer.delegate = self
+            menuItemView.tag = Int(index)
+            menuItemView.addGestureRecognizer(menuItemTapGestureRecognizer)
             
             index += 1
         }

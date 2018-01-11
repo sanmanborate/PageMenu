@@ -10,42 +10,10 @@ import UIKit
 
 extension CAPSPageMenu : UIGestureRecognizerDelegate {
     func handleMenuItemTap(_ gestureRecognizer : UITapGestureRecognizer) {
-        let tappedPoint : CGPoint = gestureRecognizer.location(in: menuScrollView)
-        
-        if tappedPoint.y < menuScrollView.frame.height {
-            
+        let view = gestureRecognizer.view;
             // Calculate tapped page
-            var itemIndex : Int = 0
-            
-            if configuration.useMenuLikeSegmentedControl {
-                itemIndex = Int(tappedPoint.x / (self.view.frame.width / CGFloat(controllerArray.count)))
-            } else if configuration.menuItemWidthBasedOnTitleTextWidth {
-                // Base case being first item
-                var menuItemLeftBound : CGFloat = 0.0
-                var menuItemRightBound : CGFloat = menuItemWidths[0] + configuration.menuMargin + (configuration.menuMargin / 2)
-                
-                if !(tappedPoint.x >= menuItemLeftBound && tappedPoint.x <= menuItemRightBound) {
-                    for i in 1...controllerArray.count - 1 {
-                        menuItemLeftBound = menuItemRightBound + 1.0
-                        menuItemRightBound = menuItemLeftBound + menuItemWidths[i] + configuration.menuMargin
-                        
-                        if tappedPoint.x >= menuItemLeftBound && tappedPoint.x <= menuItemRightBound {
-                            itemIndex = i
-                            break
-                        }
-                    }
-                }
-            } else {
-                let rawItemIndex : CGFloat = ((tappedPoint.x - startingMenuMargin) - configuration.menuMargin / 2) / (configuration.menuMargin + configuration.menuItemWidth)
-                
-                // Prevent moving to first item when tapping left to first item
-                if rawItemIndex < 0 {
-                    itemIndex = -1
-                } else {
-                    itemIndex = Int(rawItemIndex)
-                }
-            }
-            
+        let itemIndex : Int = (view?.tag)!
+        
             if itemIndex >= 0 && itemIndex < controllerArray.count {
                 // Update page if changed
                 if itemIndex != currentPageIndex {
@@ -88,6 +56,5 @@ extension CAPSPageMenu : UIGestureRecognizerDelegate {
                 let timerInterval : TimeInterval = Double(configuration.scrollAnimationDurationOnMenuItemTap) * 0.001
                 tapTimer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(CAPSPageMenu.scrollViewDidEndTapScrollingAnimation), userInfo: nil, repeats: false)
             }
-        }
     }
 }
